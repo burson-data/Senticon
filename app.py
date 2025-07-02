@@ -66,7 +66,7 @@ def get_sentiment_from_gemini(text, context, model_name="gemini-1.5-flash-latest
 @st.cache_data
 def get_text_from_url(url, fallback_title):
     if not url or not isinstance(url, str) or not url.startswith('http'):
-        return fallback_title, "URL Gagal Diakses(analisis dari snippet/judul)"
+        return fallback_title, "URL Gagal Diakses(analisis dari snippet atau judul)"
 
     # Pilih User-Agent secara acak untuk setiap permintaan
     selected_user_agent = random.choice(USER_AGENTS)
