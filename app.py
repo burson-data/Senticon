@@ -108,7 +108,7 @@ if input_method == "Unggah File":
             with col1:
                 analysis_source = st.radio(
                     "Pilih sumber teks untuk dianalisis:",
-                    ("Tarik berita dari kolom URL", "Analisis teks dari kolom Snippet"),
+                    ("Tarik berita dari kolom URL", "Analisis teks yang sudah ada dari kolom Teks/Snippet"),
                     key="analysis_source"
                 )
             
