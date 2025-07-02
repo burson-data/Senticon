@@ -66,7 +66,7 @@ def get_sentiment_from_gemini(text, context, model_name="gemini-1.5-flash-latest
 @st.cache_data
 def get_text_from_url(url, fallback_title):
     if not url or not isinstance(url, str) or not url.startswith('http'):
-        return fallback_title, "Judul dari File (URL tidak valid)"
+        return fallback_title, "URL Gagal Diakses(analisis dari snippet/judul)"
 
     # Pilih User-Agent secara acak untuk setiap permintaan
     selected_user_agent = random.choice(USER_AGENTS)
@@ -93,10 +93,10 @@ def get_text_from_url(url, fallback_title):
         
         # Fallback terakhir
         if fallback_title:
-            return fallback_title, "Judul dari File"
+            return fallback_title, "URL Gagal Diakses"
         return "", "Gagal Total"
     except Exception:
-        return fallback_title, "Judul dari File (URL Gagal Diakses)"
+        return fallback_title, "URL Gagal Diakses(analisis dari snippet/judul)"
 
 def to_excel(df):
     output = io.BytesIO()
@@ -106,7 +106,7 @@ def to_excel(df):
 
 # --- Streamlit UI dengan Tampilan Baru ---
 st.title("🤖 Senticon by Burson")
-st.markdown("Analisis sentimen dari URL atau teks yang ada dengan Konteks yang lebih detail - Powered by Gemini.")
+st.markdown("Analisis sentimen dari URL atau teks yang ada dengan Konteks yang lebih detail.")
 
 input_method = st.radio("Pilih metode input:", ("Unggah File", "Input URL Manual"), horizontal=True)
 
