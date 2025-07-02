@@ -6,6 +6,16 @@ import requests
 from bs4 import BeautifulSoup
 from newspaper import Article
 import io
+import random # <-- 1. DITAMBAHKAN
+
+# --- Daftar User-Agent untuk Rotasi ---
+USER_AGENTS = [
+'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0',
+'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15',
+'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/109.0.1518.78',
+]
 
 # --- Pindahkan st.set_page_config() ke sini, paling atas ---
 st.set_page_config(page_title="Senticon by Burson", layout="wide", initial_sidebar_state="collapsed")
@@ -52,26 +62,36 @@ def get_sentiment_from_gemini(text, context, model_name="gemini-1.5-flash-latest
     except Exception as e:
         return f"API Error", str(e)
 
+# --- FUNGSI INI YANG DIPERBARUI ---
 @st.cache_data
 def get_text_from_url(url, fallback_title):
     if not url or not isinstance(url, str) or not url.startswith('http'):
         return fallback_title, "Judul dari File (URL tidak valid)"
+
+    # Pilih User-Agent secara acak untuk setiap permintaan
+    selected_user_agent = random.choice(USER_AGENTS)
+    headers = {'User-Agent': selected_user_agent}
+
     try:
-        article = Article(url)
+        # Terapkan User-Agent dan Timeout ke Newspaper3k
+        article = Article(url, headers=headers, timeout=15)
         article.download()
         article.parse()
         if article.text and len(article.text.split()) > 20:
             return article.text, "Newspaper3k"
+        
+        # Jika Newspaper3k gagal, coba BeautifulSoup dengan User-Agent dan Timeout yang sama
         try:
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
-            response = requests.get(url, headers=headers, timeout=10)
+            response = requests.get(url, headers=headers, timeout=15) # Timeout ditingkatkan
             soup = BeautifulSoup(response.text, 'html.parser')
             paragraphs = soup.find_all('p')
             full_text = "\n".join([p.get_text() for p in paragraphs if p.get_text().strip()])
             if full_text and len(full_text.split()) > 20:
                 return full_text, "BeautifulSoup"
         except Exception:
-            pass
+            pass # Gagal secara diam-diam, lanjut ke fallback berikutnya
+        
+        # Fallback terakhir
         if fallback_title:
             return fallback_title, "Judul dari File"
         return "", "Gagal Total"
