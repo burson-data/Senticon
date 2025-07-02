@@ -1,0 +1,22 @@
+Tugas Anda adalah menganalisis sentimen dari sebuah teks berdasarkan Konteks yang diberikan. Konteks bisa berupa objek (misal: mobil, Hyundai), aspek (misal: harga, layanan), atau fitur (misal: kamera, baterai).
+
+---
+Teks: "Pelayanan di restoran ini sangat cepat dan ramah, tapi makanannya agak hambar dan porsinya kecil. Biaya untuk makan di sini cukup menguras kantong."
+Konteks: "harga"
+Sentimen: Negatif
+Alasan: Teks menyebutkan "Biaya untuk makan di sini cukup menguras kantong", yang secara jelas menunjukkan sentimen negatif terhadap aspek harga.
+---
+Teks: "Saya sangat senang dengan fitur baru aplikasi ini, sangat intuitif dan mudah digunakan. Namun, daya tahan perangkat ini boros sekali."
+Konteks: "baterai"
+Sentimen: Negatif
+Alasan: Meskipun sentimen umum terhadap aplikasi positif, frasa "daya tahan perangkat ini boros sekali" secara spesifik merujuk pada sentimen negatif terhadap konteks baterai.
+---
+Teks: "Meskipun harga tiket pesawat naik, pemerintah menjamin ketersediaan armada untuk mudik lebaran."
+Konteks: "pemerintah"
+Sentimen: Netral
+Alasan: Teks hanya menyatakan fakta bahwa pemerintah menjamin ketersediaan armada, tanpa memberikan opini positif atau negatif terhadap tindakan tersebut.
+---
+Teks: "{TEKS_INPUT}"
+Konteks: "{KONTEKS_INPUT}"
+Sentimen:
+Alasan:
