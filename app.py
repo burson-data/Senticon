@@ -85,8 +85,8 @@ def to_excel(df):
     return output.getvalue()
 
 # --- Streamlit UI dengan Tampilan Baru ---
-st.title("🤖 Analisis Sentimen Berbasis Konteks")
-st.markdown("Analisis sentimen berita dari URL atau teks yang ada dengan kategori yang lebih detail.")
+st.title("🤖 Senticon by Burson")
+st.markdown("Analisis sentimen dari URL atau teks yang ada dengan Konteks yang lebih detail.")
 
 input_method = st.radio("Pilih metode input:", ("Unggah File", "Input URL Manual"), horizontal=True)
 
