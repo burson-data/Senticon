@@ -106,7 +106,7 @@ def to_excel(df):
 
 # --- Streamlit UI dengan Tampilan Baru ---
 st.title("🤖 Senticon by Burson")
-st.markdown("Analisis sentimen dari URL atau teks yang ada dengan Konteks yang lebih detail.")
+st.markdown("AI agent untuk analisis sentimen.")
 
 input_method = st.radio("Pilih metode input:", ("Unggah File", "Input URL Manual"), horizontal=True)
 
