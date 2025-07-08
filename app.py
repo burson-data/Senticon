@@ -40,7 +40,7 @@ def load_prompt_template(file_path="prompt_template.txt"):
 PROMPT_TEMPLATE = load_prompt_template()
 
 @st.cache_data(show_spinner=False)
-def get_sentiment_from_gemini(text, context, model_name="gemini-1.5-flash-latest"):
+def get_sentiment_from_gemini(text, context, model_name="gemini-2.5-flash"):
     if not text or not context:
         return "N/A", "N/A"
     prompt = PROMPT_TEMPLATE.replace("{TEKS_INPUT}", text).replace("{KONTEKS_INPUT}", context)
