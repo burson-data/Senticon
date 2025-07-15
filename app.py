@@ -39,7 +39,7 @@ def load_prompt_template(file_path="prompt_template.txt"):
 PROMPT_TEMPLATE = load_prompt_template()
 
 @st.cache_data(show_spinner=False)
-def get_sentiment_from_gemini(text, context, model_name="gemini-2.5-flash"): # Saya ganti model ke 1.0 pro untuk stabilitas
+def get_sentiment_from_gemini(text, context, model_name="gemini-2.5-pro"): # Saya ganti model ke 1.0 pro untuk stabilitas
     if not text or not context:
         return "N/A", "N/A"
         
