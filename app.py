@@ -40,26 +40,54 @@ def load_prompt_template(file_path="prompt_template.txt"):
 PROMPT_TEMPLATE = load_prompt_template()
 
 @st.cache_data(show_spinner=False)
-def get_sentiment_from_gemini(text, context, model_name="gemini-2.5-flash"):
+def get_sentiment_from_gemini(text, context, model_name="gemini-1.0-pro-latest"): # Saya ganti model ke 1.0 pro untuk stabilitas
     if not text or not context:
         return "N/A", "N/A"
+        
     prompt = PROMPT_TEMPLATE.replace("{TEKS_INPUT}", text).replace("{KONTEKS_INPUT}", context)
+    
+    # 1. Definisikan safety settings untuk melonggarkan filter.
+    # Ini akan mengizinkan lebih banyak konten yang mungkin dianggap "agak sensitif".
+    # Hati-hati: BLOCK_NONE akan mematikan semua filter. Gunakan dengan bijak.
+    safety_settings = {
+        "HARM_CATEGORY_HARASSMENT": "BLOCK_NONE",
+        "HARM_CATEGORY_HATE_SPEECH": "BLOCK_NONE",
+        "HARM_CATEGORY_SEXUALLY_EXPLICIT": "BLOCK_NONE",
+        "HARM_CATEGORY_DANGEROUS_CONTENT": "BLOCK_NONE",
+    }
+    
     try:
-        model = genai.GenerativeModel(model_name)
+        # 2. Terapkan safety_settings saat membuat model
+        model = genai.GenerativeModel(
+            model_name=model_name,
+            safety_settings=safety_settings # <-- TAMBAHKAN INI
+        )
+        
         response = model.generate_content(prompt,
                                           generation_config=genai.types.GenerationConfig(
                                               temperature=0.2,
                                               max_output_tokens=150
                                           ))
-        response_text = response.text.strip()
-        sentiment, reason = "Not Found", "Not Found"
-        for line in response_text.split('\n'):
-            if line.lower().startswith("sentimen:"):
-                sentiment = line.split(':', 1)[1].strip()
-            elif line.lower().startswith("alasan:"):
-                reason = line.split(':', 1)[1].strip()
-        return sentiment, reason
+    
+        # 3. Periksa apakah respons benar-benar memiliki konten sebelum diakses
+        # Ini adalah cara paling aman untuk menghindari error "response.text"
+        if response.parts:
+            response_text = response.text.strip()
+            sentiment, reason = "Not Found", "Not Found"
+            for line in response_text.split('\n'):
+                if line.lower().startswith("sentimen:"):
+                    sentiment = line.split(':', 1)[1].strip()
+                elif line.lower().startswith("alasan:"):
+                    reason = line.split(':', 1)[1].strip()
+            return sentiment, reason
+        else:
+            # Jika tidak ada 'parts', berarti respons diblokir.
+            # Kita bisa lihat alasannya di prompt_feedback
+            block_reason = response.prompt_feedback.block_reason
+            return f"Blocked by Safety Filter", f"Reason: {block_reason}"
+    
     except Exception as e:
+        # Menangkap error lain seperti masalah koneksi, dll.
         return f"API Error", str(e)
 
 # --- FUNGSI INI YANG DIPERBARUI ---
